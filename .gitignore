@@ -1,0 +1,9 @@
+# Flutter/Dart
+.build/
+.dart_tool/
+packages
+pubspec.lock
+
+# iOS/Android
+ios/Pods/
+android/.gradle/
