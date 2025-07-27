@@ -39,12 +39,13 @@ class _AppRouteParser extends RouteInformationParser<RouteSettings> {
   @override
   Future<RouteSettings> parseRouteInformation(
       RouteInformation routeInformation) async {
-    return RouteSettings(name: routeInformation.location);
+    return RouteSettings(name: routeInformation.uri.toString());
   }
 
   @override
   RouteInformation restoreRouteInformation(RouteSettings configuration) {
-    return RouteInformation(location: configuration.name);
+    final loc = configuration.name ?? '/';
+    return RouteInformation(uri: Uri.parse(loc));
   }
 }
 

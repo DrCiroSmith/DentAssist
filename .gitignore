@@ -4,6 +4,13 @@
 packages
 pubspec.lock
 
+# Build outputs
+build/
+
 # iOS/Android
 ios/Pods/
 android/.gradle/
+ios/Flutter/
+ios/Runner/
+android/app/
+android/local.properties

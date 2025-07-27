@@ -2,10 +2,17 @@ import 'dart:ffi' as ffi;
 import 'dart:io';
 import 'package:ffi/ffi.dart' as pkg_ffi;
 
+// Native function signatures
+typedef _NativeInitFunc = ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Int8>);
+typedef _NativeInferFunc = ffi.Pointer<ffi.Int8> Function(
+    ffi.Pointer<ffi.Void>, ffi.Pointer<ffi.Uint8>, ffi.IntPtr, ffi.Pointer<ffi.Int8>);
+typedef _NativeFreeFunc = ffi.Void Function(ffi.Pointer<ffi.Void>);
+
+// Dart-side signatures used by lookupFunction
 typedef _InitFunc = ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Int8>);
 typedef _InferFunc = ffi.Pointer<ffi.Int8> Function(
-    ffi.Pointer<ffi.Void>, ffi.Pointer<ffi.Uint8>, ffi.IntPtr, ffi.Pointer<ffi.Int8>);
-typedef _FreeFunc = ffi.Void Function(ffi.Pointer<ffi.Void>);
+    ffi.Pointer<ffi.Void>, ffi.Pointer<ffi.Uint8>, int, ffi.Pointer<ffi.Int8>);
+typedef _FreeFunc = void Function(ffi.Pointer<ffi.Void>);
 
 class MlcLlmBindings {
   late final ffi.DynamicLibrary _lib;
@@ -16,9 +23,9 @@ class MlcLlmBindings {
   MlcLlmBindings() {
     final path = Platform.isAndroid ? 'libmlc_llm.so' : 'mlc_llm';
     _lib = ffi.DynamicLibrary.open(path);
-    _init = _lib.lookupFunction<_InitFunc, _InitFunc>('mlc_llm_init');
-    _infer = _lib.lookupFunction<_InferFunc, _InferFunc>('mlc_llm_infer');
-    _free = _lib.lookupFunction<_FreeFunc, _FreeFunc>('mlc_llm_free');
+    _init = _lib.lookupFunction<_NativeInitFunc, _InitFunc>('mlc_llm_init');
+    _infer = _lib.lookupFunction<_NativeInferFunc, _InferFunc>('mlc_llm_infer');
+    _free = _lib.lookupFunction<_NativeFreeFunc, _FreeFunc>('mlc_llm_free');
   }
 
   ffi.Pointer<ffi.Void> init(String modelPath) {
