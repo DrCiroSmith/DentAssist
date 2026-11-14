@@ -6,6 +6,11 @@ pubspec.lock
 
 # Build outputs
 build/
+*.so
+*.dylib
+*.dll
+run_test_bridge
+tests/run_test_bridge
 
 # iOS/Android
 ios/Pods/

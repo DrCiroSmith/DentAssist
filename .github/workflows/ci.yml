@@ -1,0 +1,41 @@
+name: DentAssist CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install C++ Build Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+
+      - name: Compile Native C++ MLC-LLM FFI Bridge
+        run: |
+          mkdir -p ffi
+          g++ -O3 -shared -fPIC -std=c++17 -Iffi ffi/mlc_llm_bridge.cpp -o ffi/libmlc_bridge.so
+          nm -D --defined-only ffi/libmlc_bridge.so | grep dentassist
+
+      - name: Build and Run C++ FFI Smoke Tests
+        run: |
+          g++ -O3 -std=c++17 tests/test_bridge.cpp -Lffi -lmlc_bridge -o tests/run_test_bridge
+          LD_LIBRARY_PATH=ffi ./tests/run_test_bridge
+
+      - name: Set up Dart / Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Verify Flutter Dependencies & Analyze
+        run: |
+          flutter pub get
+          flutter analyze --no-fatal-infos
