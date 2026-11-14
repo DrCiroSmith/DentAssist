@@ -186,7 +186,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(14),
-                    children: [
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -261,6 +263,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ],
                   ),
                 ),
+              ),
 
                 const SizedBox(height: 16),
 
@@ -274,7 +277,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
-                      children: [
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                         Row(
                           children: const [
                             Icon(Icons.psychology, color: Color(0xFF14B8A6), size: 20),
@@ -298,6 +303,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       ],
                     ),
                   ),
+                ),
 
                 const SizedBox(height: 16),
 

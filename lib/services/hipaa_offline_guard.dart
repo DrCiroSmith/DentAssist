@@ -13,6 +13,7 @@ class HipaaOfflineGuard {
 
   bool get isAirGapped => _isAirplaneModeForced && _isSocketAccessBlocked;
   int get activeEncryptedRecords => _encryptedVault.length;
+  int get activeSessionCount => _activeSessionCount;
 
   /// Verifies no network sockets or outbound interfaces are reachable.
   Future<bool> verifyAirGapIntegrity() async {

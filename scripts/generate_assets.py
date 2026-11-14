@@ -16,7 +16,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 from playwright.sync_api import sync_playwright
 
-REPO_ROOT = Path("/home/drnemo/projects/portfolio_overhaul/DentAssist")
+REPO_ROOT = Path(__file__).resolve().parent.parent
 ASSETS_DIR = REPO_ROOT / "assets" / "readme"
 ASSETS_DIR.mkdir(parents=True, exist_ok=True)
 
