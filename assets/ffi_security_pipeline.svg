@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="1200" height="420" role="img" aria-labelledby="t6 d6">
+  <title id="t6">DentAssist Zero-Cloud Memory and Cryptographic Wipe Lifecycle</title>
+  <desc id="d6">5-stage secure memory lifecycle from Flutter UI through Dart FFI, C++ MLC-LLM, SQLCipher AES-256, to DoD 5220.22-M 3-pass memory wipe.</desc>
+  <style>
+    .bg { fill: #0B111A; }
+    .panel { fill: #131B26; stroke: #233142; stroke-width: 1.2; }
+    .stage-card { fill: #1A2536; stroke: #2A3B50; stroke-width: 1.2; }
+    .txt-main { fill: #F1F5F9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    .txt-sub { fill: #94A3B8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    .txt-mono { fill: #38BDF8; font-family: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .conn-arrow { stroke: #38BDF8; stroke-width: 2; stroke-dasharray: 4 4; animation: streamArrow 8s linear infinite; }
+    .wiper-arm { animation: wipeMove 3s ease-in-out infinite alternate; }
+    
+    @keyframes streamArrow { to { stroke-dashoffset: -80; } }
+    @keyframes wipeMove { 0% { transform: translateX(0px); } 100% { transform: translateX(130px); } }
+
+    @media (prefers-color-scheme: light) {
+      .bg { fill: #F8FAFC; }
+      .panel { fill: #FFFFFF; stroke: #CBD5E1; }
+      .stage-card { fill: #F1F5F9; stroke: #CBD5E1; }
+      .txt-main { fill: #0F172A; }
+      .txt-sub { fill: #475569; }
+      .txt-mono { fill: #0284C7; }
+      .conn-arrow { stroke: #0284C7; }
+    }
+  </style>
+
+  <rect width="1200" height="420" rx="16" class="bg"/>
+  <rect x="0.5" y="0.5" width="1199" height="419" rx="15.5" fill="none" stroke="#334155" stroke-opacity="0.3"/>
+
+  <!-- Header -->
+  <g transform="translate(50, 24)">
+    <text x="0" y="24" class="txt-main" font-size="18" font-weight="700">ON-DEVICE ZERO-CLOUD MEMORY &amp; CRYPTOGRAPHIC LIFECYCLE</text>
+    <text x="0" y="44" class="txt-sub" font-size="12">Air-Gapped Pointer Handling · Zero Heap Leakage · DoD 5220.22-M 3-Pass Overwrite</text>
+  </g>
+
+  <!-- Connective Arrows -->
+  <g fill="none">
+    <path d="M 230 190 L 270 190" class="conn-arrow"/>
+    <path d="M 460 190 L 500 190" class="conn-arrow"/>
+    <path d="M 690 190 L 730 190" class="conn-arrow"/>
+    <path d="M 920 190 L 960 190" class="conn-arrow"/>
+  </g>
+
+  <!-- 5 Stages -->
+  <!-- Stage 1: Flutter UI -->
+  <g transform="translate(50, 100)">
+    <rect width="180" height="180" rx="10" class="stage-card"/>
+    <rect x="12" y="12" width="156" height="24" rx="4" fill="#0284C7" fill-opacity="0.15"/>
+    <text x="20" y="28" fill="#38BDF8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" font-weight="700">STAGE 1</text>
+    <text x="14" y="60" class="txt-main" font-size="13" font-weight="600">Flutter UI Layer</text>
+    <text x="14" y="80" class="txt-sub" font-size="11">Radiograph Buffer</text>
+    <text x="14" y="104" class="txt-mono" font-size="10" fill="#38BDF8">Direct Pixels in RAM</text>
+    <text x="14" y="126" class="txt-sub" font-size="10">Zero cloud upload hooks</text>
+    <text x="14" y="146" class="txt-sub" font-size="10">Isolated state scope</text>
+  </g>
+
+  <!-- Stage 2: Dart FFI C-Bridge -->
+  <g transform="translate(280, 100)">
+    <rect width="180" height="180" rx="10" class="stage-card"/>
+    <rect x="12" y="12" width="156" height="24" rx="4" fill="#10B981" fill-opacity="0.15"/>
+    <text x="20" y="28" fill="#10B981" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" font-weight="700">STAGE 2</text>
+    <text x="14" y="60" class="txt-main" font-size="13" font-weight="600">Dart FFI C-Bridge</text>
+    <text x="14" y="80" class="txt-sub" font-size="11">Pinned Pointers</text>
+    <text x="14" y="104" class="txt-mono" font-size="10" fill="#10B981">Pointer&lt;Uint8&gt; Zero Copy</text>
+    <text x="14" y="126" class="txt-sub" font-size="10">No garbage collection lag</text>
+    <text x="14" y="146" class="txt-sub" font-size="10">Native heap isolation</text>
+  </g>
+
+  <!-- Stage 3: C++ MLC-LLM Runtime -->
+  <g transform="translate(510, 100)">
+    <rect width="180" height="180" rx="10" class="stage-card"/>
+    <rect x="12" y="12" width="156" height="24" rx="4" fill="#8B5CF6" fill-opacity="0.15"/>
+    <text x="20" y="28" fill="#8B5CF6" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" font-weight="700">STAGE 3</text>
+    <text x="14" y="60" class="txt-main" font-size="13" font-weight="600">C++ MLC Runtime</text>
+    <text x="14" y="80" class="txt-sub" font-size="11">4-Bit Quantized Core</text>
+    <text x="14" y="104" class="txt-mono" font-size="10" fill="#8B5CF6">MedGemma 4B Weights</text>
+    <text x="14" y="126" class="txt-sub" font-size="10">Local GPU execution</text>
+    <text x="14" y="146" class="txt-sub" font-size="10">No network sockets</text>
+  </g>
+
+  <!-- Stage 4: SQLCipher AES-256 -->
+  <g transform="translate(740, 100)">
+    <rect width="180" height="180" rx="10" class="stage-card"/>
+    <rect x="12" y="12" width="156" height="24" rx="4" fill="#F59E0B" fill-opacity="0.15"/>
+    <text x="20" y="28" fill="#F59E0B" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" font-weight="700">STAGE 4</text>
+    <text x="14" y="60" class="txt-main" font-size="13" font-weight="600">SQLCipher AES-256</text>
+    <text x="14" y="80" class="txt-sub" font-size="11">Encrypted Persistence</text>
+    <text x="14" y="104" class="txt-mono" font-size="10" fill="#F59E0B">256-Bit Hardware Key</text>
+    <text x="14" y="126" class="txt-sub" font-size="10">Local session audit log</text>
+    <text x="14" y="146" class="txt-sub" font-size="10">Zero plaintext storage</text>
+  </g>
+
+  <!-- Stage 5: DoD 5220.22-M Wipe -->
+  <g transform="translate(970, 100)">
+    <rect width="180" height="180" rx="10" class="stage-card"/>
+    <rect x="12" y="12" width="156" height="24" rx="4" fill="#EF4444" fill-opacity="0.15"/>
+    <text x="20" y="28" fill="#EF4444" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" font-weight="700">STAGE 5</text>
+    <text x="14" y="60" class="txt-main" font-size="13" font-weight="600">DoD 5220.22-M Wipe</text>
+    <text x="14" y="80" class="txt-sub" font-size="11">3-Pass Sanitization</text>
+    <text x="14" y="104" class="txt-mono" font-size="10" fill="#EF4444">0x00 · 0xFF · Random</text>
+    
+    <g transform="translate(14, 126)">
+      <rect width="152" height="16" rx="4" fill="#0B111A"/>
+      <g class="wiper-arm">
+        <rect x="0" y="0" width="22" height="16" rx="2" fill="#EF4444"/>
+      </g>
+    </g>
+    <text x="14" y="162" class="txt-sub" font-size="10">Memory zeroized on close</text>
+  </g>
+
+  <!-- Footer Banner -->
+  <g transform="translate(50, 310)">
+    <rect width="1100" height="60" rx="10" class="panel"/>
+    <circle cx="28" cy="30" r="5" fill="#10B981"/>
+    <text x="46" y="26" class="txt-main" font-size="12" font-weight="600">Strict Cryptographic Zero-Trace Contract</text>
+    <text x="46" y="44" class="txt-sub" font-size="11">Patient radiograph buffers reside strictly in volatile RAM and undergo hardware-level 3-pass zeroization upon diagnostic completion.</text>
+  </g>
+</svg>

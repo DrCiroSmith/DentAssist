@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/readme/hero.svg" alt="DentAssist Banner" width="100%">
+  <img src="assets/ipad_airgap_hero.svg" alt="DentAssist Banner" width="100%">
 </p>
 
 <p align="center">
@@ -31,6 +31,10 @@ DentAssist runs all tensor operations directly on device:
 ---
 
 ## 2. On-Device System Architecture
+
+<p align="center">
+  <img src="assets/ffi_security_pipeline.svg" alt="On-Device Zero-Cloud Memory & Cryptographic Lifecycle" width="100%">
+</p>
 
 DentAssist connects Flutter reactive widgets with the low-level MLC-LLM C++ runtime through Dart Foreign Function Interface (FFI):
 
