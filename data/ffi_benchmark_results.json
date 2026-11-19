@@ -1,0 +1,41 @@
+{
+  "benchmark_meta": {
+    "compiler": "g++ -O3 -std=c++17",
+    "iterations": 2000,
+    "note": "Measured empirical C++17 FFI ABI and memory-sanitization benchmarks on this host. MedGemma-4B INT4 weight footprint (~2.0 GB raw, ~2.3-2.6 GB with overhead) is published model-size math, distinct from these measured FFI/wipe/route benchmarks."
+  },
+  "ffi_init_teardown_latency_us": {
+    "init_mean_us": 0.0306,
+    "init_median_us": 0.0000,
+    "init_p95_us": 0.0000,
+    "teardown_mean_us": 0.0423,
+    "teardown_median_us": 0.0000
+  },
+  "token_callback_dispatch": {
+    "iterations": 2000,
+    "total_tokens_dispatched": 276000,
+    "total_seconds": 0.008522,
+    "tokens_per_sec": 32387713.79
+  },
+  "volatile_wipe": {
+    "passes": 4,
+    "buffer_sizes_mb": [1, 4, 16, 64],
+    "wipe_mean_ms": [2.6623, 10.4601, 41.5904, 163.8926],
+    "throughput_mb_per_sec": [375.61, 382.41, 384.70, 390.50],
+    "primary_size_mb": 16,
+    "primary_mean_ms": 41.5904,
+    "primary_throughput_mb_per_sec": 384.70
+  },
+  "route_table_airgap_latency_us": {
+    "mean_us": 0.8766,
+    "median_us": 0.7500
+  },
+  "medgemma_4b_weight_specs": {
+    "parameters_b": 4,
+    "int4_bytes_per_param": 0.5,
+    "int4_weight_footprint_gb_raw": 2.0,
+    "int4_weight_footprint_gb_with_overhead": "2.3-2.6",
+    "bf16_weight_footprint_gb": 8.0,
+    "note": "4B params x 0.5 bytes = ~2.0 GB raw INT4; ~2.3-2.6 GB with overhead vs ~8.0 GB BF16. Published model-size math, distinct from measured FFI/wipe/route benchmarks."
+  }
+}

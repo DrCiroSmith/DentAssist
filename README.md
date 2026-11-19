@@ -1,20 +1,12 @@
+# DentAssist
+
+Offline-first Flutter and C++17 FFI clinical architecture for edge MedGemma-4B. Verified C++17 systems primitives (air-gap route gate, 3-pass volatile buffer wipe) with measured empirical benchmarks. MLC-LLM runtime stays pluggable behind `#ifdef USE_MLC_RUNTIME`. No patient data is used anywhere in this repository.
+
 <p align="center">
-  <img src="assets/ipad_airgap_hero.svg" alt="DentAssist Banner" width="100%">
+  <img src="assets/hero_banner.png" alt="DentAssist hero banner" width="100%">
 </p>
-
-<p align="center">
-  <a href="https://github.com/DrCiroSmith/DentAssist/actions/workflows/ci.yml"><img src="https://github.com/DrCiroSmith/DentAssist/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
-  <a href="https://flutter.dev"><img src="https://img.shields.io/badge/Flutter-3.22+-02569B?logo=flutter&logoColor=white" alt="Flutter 3.22+"></a>
-  <a href="https://dart.dev"><img src="https://img.shields.io/badge/Dart-3.0+-0175C2?logo=dart&logoColor=white" alt="Dart 3.0+"></a>
-  <a href="https://huggingface.co/google"><img src="https://img.shields.io/badge/Model-MedGemma_4B-8E75C2" alt="MedGemma 4B"></a>
-  <a href="https://mlc.ai/mlc-llm/"><img src="https://img.shields.io/badge/Engine-MLC--LLM_Vulkan_Metal-E535AB" alt="MLC-LLM"></a>
-</p>
-
-DentAssist is an on-device clinical companion for oral medicine and chairside dental radiography interpretation. Built with Flutter and a 4-bit quantized MedGemma 4B model running via native C++ FFI to MLC-LLM, it generates real-time differential assessments with zero cloud dependencies and verifiable air-gap isolation.
-
-<p align="center">
-  <img src="assets/readme/dentassist_demo.gif" alt="DentAssist Tablet Interface and Secure Wipe Demo" width="100%">
+<p align="center" style="font-size:0.9rem;color:#94a3b8;">
+  UI Architecture Preview · Synthetic Case. No patient data.
 </p>
 
 ---
@@ -23,151 +15,166 @@ DentAssist is an on-device clinical companion for oral medicine and chairside de
 
 Chairside dental practice requires rapid verification: identifying mucosal lesions, reviewing periapical lucencies, and checking drug interactions against medical histories. Sending patient radiographs or intraoral photographs to cloud foundation APIs presents serious regulatory and HIPAA compliance challenges.
 
-DentAssist runs all tensor operations directly on device:
-- **Zero Cloud Egress:** All model weights execute in the mobile device local memory sandbox. Network requests are blocked during diagnostic workflows.
-- **Hardware-Accelerated Edge Inference:** Quantized weights utilize mobile GPUs through Apple Metal on iOS and Vulkan on Android, delivering 28.5 tokens per second.
-- **DoD-Standard Secure Wipe:** A 1-tap memory purge overwrites volatile RAM buffers using a 3-pass DoD 5220.22-M routine.
+DentAssist is designed to run inference on device. The C++17 FFI layer enforces the air gate in verifiable code rather than assuming it.
 
----
+<p align="center">
+  <img src="assets/fig1_airgap_security_model.png" alt="Figure 1: air-gap security model" width="100%">
+</p>
+
+### Verified air-gap gate
+
+`dentassist_is_offline_verified()` performs two real checks:
+
+1. Parses `/proc/net/route` and confirms zero active default gateways (`Destination == 0x00000000`).
+2. Probes `getifaddrs()` for non-loopback `IFF_UP` interfaces (POSIX; clean `#ifdef` guard for other platforms).
+
+It returns `1` only when no default gateway and no live non-loopback interface exist. The pure parser `dentassist_check_route_table(const char*)` is fed file content directly and is tested deterministically: air-gapped content is accepted, online content with a default gateway is rejected.
 
 ## 2. On-Device System Architecture
 
-<p align="center">
-  <img src="assets/ffi_security_pipeline.svg" alt="On-Device Zero-Cloud Memory & Cryptographic Lifecycle" width="100%">
-</p>
-
-DentAssist connects Flutter reactive widgets with the low-level MLC-LLM C++ runtime through Dart Foreign Function Interface (FFI):
-
-```mermaid
-flowchart TD
-    subgraph S1["1. Flutter Presentation Layer (Dart)"]
-        A["Chairside Input<br/>(Digital Bitewing / Clinical Query)"] --> B["Pre-Processing and Image Normalizer"]
-        B --> C["Dart FFI Interface<br/>(ffi/mlc_llm_bridge.dart)"]
-    end
-
-    subgraph S2["2. Native C++ Engine (ffi/mlc_llm_bridge.cpp)"]
-        C --> D["C ABI Exported Symbols<br/>dentassist_infer_multimodal()"]
-        D --> E["MLC-LLM Execution Runtime"]
-        E --> F{"Platform GPU Acceleration"}
-        F -->|Android arm64| G["Vulkan / OpenCL Compute Pipeline"]
-        F -->|iOS arm64| H["Metal Performance Shaders (MPS)"]
-    end
-
-    subgraph S3["3. Local Storage Sandbox"]
-        G --> I["Quantized MedGemma 4B<br/>(4-Bit INT4-GGUF, 2.6 GB)"]
-        H --> I
-    end
-
-    subgraph S4["4. Real-Time Token Stream"]
-        I -->|Zero-Copy Token Callback| J["StreamController and UI Renderer"]
-        J --> K["Chairside Differential and Protocol Plan"]
-        K --> L["ADA CDS Advisory Disclaimer"]
-    end
-```
-
----
-
-## 3. Modular Service Architecture
-
-The core application logic is decoupled into specialized clinical services:
-
-### MedGemma Service (`lib/services/medgemma_service.dart`)
-Orchestrates prompt formatting, vision tokenization boundaries, and real-time token streaming. Includes a deterministic offline simulation mode for unit tests and emulator environments without full weights.
-
-### HIPAA Offline Guard (`lib/services/hipaa_offline_guard.dart`)
-Verifies air-gap integrity before unlocking clinical sessions. Wraps local encrypted storage and executes cryptographic secure wipe routines when cases are closed.
-
-### Clinical Disclaimer Guardrail (`lib/services/clinical_disclaimer.dart`)
-Applies American Dental Association (ADA) clinical decision support disclosures and logs audit timestamps adhering to FDA 2022 CDS Guidance section 520(o)(1)(E).
-
----
-
-## 4. Empirical Benchmarks
-
-The figures below compare 4-bit quantized MedGemma 4B against higher precision baselines and cloud endpoints.
+Flutter reactive widgets connect to the low-level C++ FFI bridge through Dart FFI. The MLC-LLM execution runtime is not linked in this build; it sits behind a commented-out `#ifdef USE_MLC_RUNTIME`, so inference runs through a deterministic offline simulation. GPU acceleration (Vulkan/Metal) is a target, not a verified implementation.
 
 <p align="center">
-  <img src="assets/readme/quantization_benchmarks.png" alt="Quantization and Edge Latency Benchmarks" width="100%">
+  <img src="assets/fig2_ffi_architecture.png" alt="Figure 2: FFI architecture" width="100%">
 </p>
 
-- **Panel A (Memory Footprint):** 4-bit quantization reduces memory requirements from 8.4 GB (FP16) down to 2.6 GB, well beneath the 6 GB RAM threshold of standard mobile hardware.
-- **Panel B (Generation Speed):** On a Snapdragon 8 Gen 3 or Apple A17 Pro GPU, generation throughput increases from 4.2 tokens/sec (FP16) to 28.5 tokens/sec (INT4), surpassing the 15 token/sec reading baseline.
-- **Panel C (Privacy and Latency):** Cold-start latency drops to 1.4 seconds. Outbound network transmission is verified at 0 bytes per query compared to 1.85 MB for cloud-hosted equivalents.
+### Four-layer stack
 
----
+| Layer | Responsibility |
+|-------|----------------|
+| Flutter 3.22 UI | ChatScreen, clinical disclaimer, MedGemmaService |
+| Dart FFI Bindings | `mlc_llm_bridge.dart`, symbol lookup, streaming callback |
+| C++17 `libmlc_bridge` | `dentassist_is_offline_verified`, `dentassist_secure_wipe_buffer`, route gate |
+| Pluggable MLC-LLM + Test Harness | `#ifdef USE_MLC_RUNTIME` engine, deterministic offline simulation for CI |
 
-## 5. Repository Structure
+## 3. Real Volatile Memory Zeroization
+
+`dentassist_secure_wipe_buffer(void* ptr, size_t len)` is a genuine 3-pass volatile buffer sanitization routine callable from Dart FFI:
+
+1. Pass 1: zeros (`0x00`)
+2. Pass 2: `0xFF`
+3. Pass 3: deterministic CSPRNG (xorshift64*) noise
+4. Final pass: zeros (leaves the buffer provably sanitized)
+
+It uses `volatile uint8_t*` and a compiler memory barrier (`asm volatile("" : : "r"(p) : "memory")`) so the passes cannot be optimized away. Byte-level zeroization is asserted in `tests/test_bridge.cpp`.
+
+## 4. Measured C++17 Benchmarks
+
+All figures below are measured empirically on this host with `g++ -O3 -std=c++17` across 2,000 iterations and written to `data/ffi_benchmark_results.json`. They cover the C++17 FFI ABI and memory sanitization only. MedGemma-4B weight footprint figures are published model-size math, clearly distinguished from the measured benchmarks.
+
+| Measurement | Result |
+|-------------|--------|
+| C ABI FFI init latency (mean) | ~0.035 us |
+| C ABI FFI teardown latency (mean) | ~0.031 us |
+| Token callback dispatch throughput | ~26.7M - 30.6M tokens/sec |
+| 3-pass volatile wipe (16 MB buffer) | ~46.3 ms, ~345.5 MB/s |
+| Route-table air-gap inspection latency | ~0.8 us |
+
+Wipe throughput across buffer sizes: 1 MB ~320.8 MB/s, 4 MB ~332.3 MB/s, 16 MB ~345.5 MB/s, 64 MB ~342.6 MB/s.
+
+<p align="center">
+  <img src="assets/fig3_empirical_ffi_benchmarks.png" alt="Figure 3: empirical FFI benchmarks" width="100%">
+</p>
+
+### MedGemma-4B weight footprint (published model-size math, not measured)
+
+4 billion parameters x 0.5 bytes per INT4 parameter = ~2.0 GB raw INT4 weight footprint (~2.3-2.6 GB with overhead) versus ~8.0 GB BF16. This is published quantization math and is distinct from the measured C++17 FFI, wipe, and route benchmarks above. No MedGemma weights are bundled or downloaded in this repository.
+
+## 5. Repository Contents
 
 ```
 DentAssist/
-├── .github/workflows/
-│   └── ci.yml               # Native C++ compilation and test automation
+├── LICENSE                              # MIT License
+├── README.md
+├── pubspec.yaml                         # Flutter dependencies
 ├── assets/
-│   └── readme/
-│       ├── hero.svg         # Executive vector banner
-│       ├── dentassist_demo.gif # Mobile UI workflow capture
-│       ├── quantization_benchmarks.png # 300 DPI benchmark plots
-│       └── social_preview.png # Preview metadata image
+│   ├── fonts/                           # Inter + JetBrains Mono (Retina suite)
+│   ├── hero_banner.png                  # 2400x760 Retina PNG
+│   ├── fig1_airgap_security_model.png   # 2400x720 Retina PNG
+│   ├── fig2_ffi_architecture.png        # 2400x880 Retina PNG
+│   ├── fig3_empirical_ffi_benchmarks.png # 2400x1360 Retina PNG
+│   └── social_preview.png               # 2560x1280 Retina PNG (not embedded)
+├── data/
+│   └── ffi_benchmark_results.json       # Measured benchmark output
 ├── ffi/
-│   ├── mlc_llm_bridge.h     # Native C function signatures
-│   ├── mlc_llm_bridge.cpp   # C++ FFI runtime implementation
-│   └── mlc_llm_bridge.dart  # Dart FFI bindings and stream handlers
+│   ├── mlc_llm_bridge.h                 # C ABI header
+│   ├── mlc_llm_bridge.cpp               # C++17 implementation
+│   ├── mlc_llm_bridge.dart              # Dart FFI bindings
+│   └── libmlc_bridge.so                 # Built shared library
 ├── lib/
-│   ├── main.dart            # Flutter application entry point
-│   ├── services/
-│   │   ├── clinical_disclaimer.dart # ADA compliance and audit records
-│   │   ├── hipaa_offline_guard.dart # Air-gap verification and secure wipe
-│   │   └── medgemma_service.dart    # Multimodal prompt orchestration
-│   └── widgets/
-│       └── ChatScreen.dart  # Clinical conversational interface
+│   ├── main.dart
+│   ├── widgets/ChatScreen.dart
+│   └── services/
+│       ├── clinical_disclaimer.dart
+│       ├── hipaa_offline_guard.dart
+│       └── medgemma_service.dart
 ├── scripts/
-│   ├── convert_and_push.sh  # Quantization and adb transfer utility
-│   └── generate_assets.py   # Automated asset generation pipeline
+│   └── build_readme_visuals.py          # Playwright Retina PNG renderer
 ├── tests/
-│   └── test_bridge.cpp      # Native C++ FFI unit test suite
-├── test/
-│   └── widget_test.dart     # Flutter widget smoke tests
-└── pubspec.yaml             # Dart dependencies and metadata
+│   ├── test_bridge.cpp                  # C++ FFI unit tests
+│   └── benchmark_bridge.cpp             # C++ benchmark suite -> data JSON
+└── .github/workflows/ci.yml             # Compiles .so, runs tests + benchmark
 ```
-
----
 
 ## 6. Developer Setup
 
 ### Prerequisites
-- Flutter SDK (3.22.0 or higher)
 - C++17 compiler (`g++` or `clang++`) for native FFI compilation
-- Android Studio with Android NDK (r26c+) or Xcode 15.0+ with Metal
+- Flutter SDK (3.22.0 or higher) for the Flutter application
+- Android Studio with Android NDK or Xcode with Metal for on-device builds
 
 ### 1. Compile the Native C++ Bridge
 ```bash
-cd ffi
-g++ -O3 -shared -fPIC -std=c++17 mlc_llm_bridge.cpp -o libmlc_bridge.so
-cd ..
+g++ -O3 -shared -fPIC -std=c++17 -Iffi ffi/mlc_llm_bridge.cpp -o ffi/libmlc_bridge.so
 ```
 
-### 2. Run the C++ FFI Smoke Test
+### 2. Run the C++ FFI Tests
 ```bash
 g++ -O3 -std=c++17 tests/test_bridge.cpp -Lffi -lmlc_bridge -o tests/run_test_bridge
 LD_LIBRARY_PATH=ffi ./tests/run_test_bridge
 ```
 
-### 3. Launch Flutter Application
+### 3. Run the C++ Benchmark Suite (writes data/ffi_benchmark_results.json)
+```bash
+g++ -O3 -std=c++17 tests/benchmark_bridge.cpp -Lffi -lmlc_bridge -o tests/run_benchmark
+LD_LIBRARY_PATH=ffi ./tests/run_benchmark
+```
+
+### 4. Launch Flutter Application
 ```bash
 flutter pub get
 flutter run -d chrome  # Or connect an Android/iOS device
 ```
 
----
+## 7. Continuous Integration
 
-## 7. Clinical Notice
+`.github/workflows/ci.yml` compiles `libmlc_bridge.so`, runs `tests/test_bridge.cpp`, runs `tests/benchmark_bridge.cpp`, and prints `data/ffi_benchmark_results.json` on every push to `main` or `master`.
+
+## 8. Clinical Notice
 
 DentAssist is an experimental clinical decision support tool designed to assist licensed dental surgeons and healthcare professionals. It does not provide definitive medical diagnoses. All algorithmic outputs, anatomical notes, and clinical suggestions must be reviewed against patient records and direct examination.
 
----
+Inference output in this repository is a deterministic offline simulation (hardcoded clinical text), not a live MedGemma model. No patient data is used.
 
-## 8. Author
+## 9. Author
 
 **Dr. Roi Castrellon, DDS**  
 Clinical AI and Healthcare Data Engineering  
 GitHub: [@DrCiroSmith](https://github.com/DrCiroSmith)
+
+---
+
+## Verification Status
+
+| Area | Status | Notes |
+|------|--------|-------|
+| C++ FFI bridge build | Verified | Compiles with `g++ -O3 -std=c++17`; all `dentassist_*` ABI symbols exported |
+| C++ FFI unit tests | Verified | `tests/test_bridge.cpp` passes (exit 0): route parse, wipe zeroization, inference streaming |
+| C++ benchmark suite | Verified | `tests/benchmark_bridge.cpp` writes `data/ffi_benchmark_results.json` (exit 0) |
+| Air-gap / secure wipe | Verified (code-level) | Real `/proc/net/route` parse + `getifaddrs()` guard; 3-pass volatile wipe with compiler barrier |
+| MLC-LLM runtime | Pluggable (not linked) | Behind `#ifdef USE_MLC_RUNTIME`; offline simulation used in CI |
+| Flutter analyze / test | Blocked | Flutter SDK not installed in this environment |
+| On-device / GPU inference | Blocked | No physical device, NDK, Xcode, or linked MLC-LLM runtime |
+| Compliance (FDA/ADA/HIPAA) | Not certified | Statements of intent only; no clearance or audit evidence |
+
+No throughput, RAM, zero-egress, secure-wipe, or clinical/compliance claim is published without supporting evidence. Published MedGemma-4B weight footprint figures are model-size math, distinguished from measured benchmarks. No apology banners are retained; earlier unverified draft figures have been replaced with measured results.

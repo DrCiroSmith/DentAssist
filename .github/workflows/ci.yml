@@ -20,14 +20,20 @@ jobs:
 
       - name: Compile Native C++ MLC-LLM FFI Bridge
         run: |
-          mkdir -p ffi
+          mkdir -p ffi data
           g++ -O3 -shared -fPIC -std=c++17 -Iffi ffi/mlc_llm_bridge.cpp -o ffi/libmlc_bridge.so
-          nm -D --defined-only ffi/libmlc_bridge.so | grep dentassist
+          nm -D --defined-only ffi/libmlc_bridge.so | grep -E 'dentassist_'
 
       - name: Build and Run C++ FFI Smoke Tests
         run: |
           g++ -O3 -std=c++17 tests/test_bridge.cpp -Lffi -lmlc_bridge -o tests/run_test_bridge
           LD_LIBRARY_PATH=ffi ./tests/run_test_bridge
+
+      - name: Build and Run C++ FFI Benchmark Suite
+        run: |
+          g++ -O3 -std=c++17 tests/benchmark_bridge.cpp -Lffi -lmlc_bridge -o tests/run_benchmark
+          LD_LIBRARY_PATH=ffi ./tests/run_benchmark
+          cat data/ffi_benchmark_results.json
 
       - name: Set up Dart / Flutter SDK
         uses: subosito/flutter-action@v2
