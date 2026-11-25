@@ -58,7 +58,7 @@ TEXTM   = "#94a3b8"   # secondary
 ACCENT  = "#38bdf8"   # cyan
 ACCENT2 = "#818cf8"   # indigo
 OK      = "#22c55e"
-WARN    = "#f87171"
+WARN    = "#ef4444"
 LINE    = "#334155"
 
 PLAYWRIGHT_PY = "/home/drnemo/projects/portfolio_overhaul/DrNemo-Caries-Foundry/.venv/bin/python"
@@ -91,8 +91,6 @@ p.stop()
         print("STDERR:", r.stderr)
         raise SystemExit(f"Playwright render failed for {name}")
     os.unlink(tmppath)
-
-print("Visual suite renderer module loaded. Run build_figures() to render.")
 
 
 # =====================================================================
@@ -169,8 +167,8 @@ def render_fig1():
     .col.b{{background:{ELEV};}}
     .t{{font-size:16px;font-weight:700;margin:0 0 12px 0;}}
     .t.a{{color:{WARN};}}.t.b{{color:{OK};}}
-    .item{{display:flex;align-items:center;gap:10px;margin:0 0 10px 0;font-size:14px;line-height:1.45;color:{TEXTM};}}
-    .dot{{width:8px;height:8px;border-radius:50%;flex:0 0 auto;}}
+    .item{{display:flex;align-items:flex-start;gap:10px;margin:0 0 10px 0;font-size:14px;line-height:1.45;color:{TEXTM};}}
+    .dot{{width:8px;height:8px;border-radius:50%;flex:0 0 auto;margin-top:2px;}}
     .dot.a{{background:{WARN};}}.dot.b{{background:{OK};}}
     .foot{{margin-top:14px;font-size:13px;color:{TEXTM};}}
     b.clr{{color:{TEXT};}}
@@ -204,22 +202,23 @@ def render_fig1():
 
 
 def render_fig2():
-    logical_w, logical_h = 1200, 440
+    logical_w, logical_h = 1200, 520
     css = f"""
     html,body{{margin:0;padding:0;width:{logical_w}px;height:{logical_h}px;
       background:{BG};color:{TEXT};font-family:'Inter',sans-serif;overflow:hidden;}}
     .wrap{{position:relative;width:100%;height:100%;padding:40px 60px;box-sizing:border-box;}}
     .kicker{{font-size:15px;font-weight:700;letter-spacing:0.12em;color:{ACCENT};text-transform:uppercase;margin:0 0 14px 0;}}
-    h2{{font-size:26px;font-weight:800;margin:0 0 22px 0;line-height:1.2;}}
-    .layers{{display:flex;flex-direction:column;gap:14px;width:100%;}}
-    .layer{{display:flex;align-items:center;gap:14px;height:64px;border:1px solid {LINE};border-radius:9px;padding:0 18px;box-sizing:border-box;overflow:hidden;}}
+    h2{{font-size:26px;font-weight:800;margin:0 0 24px 0;line-height:1.2;}}
+    .layers{{display:flex;flex-direction:column;gap:16px;width:100%;}}
+    .layer{{display:flex;align-items:center;gap:16px;height:86px;border:1px solid {LINE};border-radius:10px;padding:0 20px;box-sizing:border-box;overflow:hidden;}}
     .layer.l1{{background:{PANEL};}}.layer.l2{{background:{ELEV};}}
     .layer.l3{{background:{PANEL};}}.layer.l4{{background:{ELEV};}}
-    .num{{font-family:'JetBrains Mono',mono;font-size:15px;font-weight:700;color:{ACCENT2};flex:0 0 auto;width:26px;}}
-    .name{{font-size:15px;font-weight:700;color:{TEXT};flex:1;min-width:0;}}
-    .desc{{font-size:12.5px;color:{TEXTM};font-family:'JetBrains Mono',mono;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;}}
-    .arr{{position:absolute;left:50%;color:{LINE};font-size:16px;font-weight:800;}}
-    .foot{{position:absolute;bottom:30px;left:60px;right:60px;font-size:13px;color:{TEXTM};line-height:1.5;}}
+    .num{{font-family:'JetBrains Mono',mono;font-size:17px;font-weight:800;color:{ACCENT2};flex:0 0 auto;width:30px;}}
+    .name{{font-size:16px;font-weight:700;color:{TEXT};flex:1;min-width:0;}}
+    .desc{{font-size:12.5px;color:{TEXTM};font-family:'JetBrains Mono',mono;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:250px;}}
+    .arr{{position:absolute;left:50%;color:{LINE};font-size:17px;font-weight:800;}}
+    .flow{{margin-top:14px;font-size:14px;color:{TEXTM};font-family:'JetBrains Mono',mono;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}}
+    .foot{{position:absolute;bottom:28px;left:60px;right:60px;font-size:12.5px;color:{TEXTM};line-height:1.45;text-align:center;}}
     b.mono{{font-family:'JetBrains Mono',mono;color:{ACCENT};}}
     """
     body = f"""
@@ -228,11 +227,11 @@ def render_fig2():
       <h2>Four-Layer Stack: Flutter UI to Pluggable MLC-LLM Runtime</h2>
       <div class="layers">
         <div class="layer l1"><div class="num">1</div><div class="name">Flutter 3.22 UI</div><div class="desc">ChatScreen · clinical disclaimer · MedGemmaService</div></div>
-        <div class="arr" style="top:134px;">&#9660;</div>
+        <div class="arr" style="top:202px;">&#9660;</div>
         <div class="layer l2"><div class="num">2</div><div class="name">Dart FFI Bindings</div><div class="desc">mlc_llm_bridge.dart · dentassist_* symbol lookup · streaming callback</div></div>
-        <div class="arr" style="top:212px;">&#9660;</div>
+        <div class="arr" style="top:308px;">&#9660;</div>
         <div class="layer l3"><div class="num">3</div><div class="name">C++17 libmlc_bridge</div><div class="desc"><b.mono>dentassist_is_offline_verified()</b.mono> · <b.mono>dentassist_secure_wipe_buffer()</b.mono> · route gate + volatile wipe</div></div>
-        <div class="arr" style="top:290px;">&#9660;</div>
+        <div class="arr" style="top:414px;">&#9660;</div>
         <div class="layer l4"><div class="num">4</div><div class="name">Pluggable MLC-LLM + Test Harness</div><div class="desc"><span style="font-family:'JetBrains Mono',mono;">#ifdef USE_MLC_RUNTIME</span> engine · deterministic offline simulation for CI</div></div>
       </div>
       <div class="flow">Flutter UI &rarr; Dart FFI &rarr; C++17 FFI (route gate + volatile wipe) &rarr; pluggable MLC-LLM runtime / offline harness</div>
@@ -242,28 +241,61 @@ def render_fig2():
     render("fig2_ffi_architecture.png", logical_w, logical_h, css, body)
 
 
+def _bar_chart(values, max_value, bar_colors, bar_labels, value_labels, xlabels, panel_h):
+    """Build a flex-based bar chart. Returns (bars_html, xaxis_html)."""
+    bars = []
+    n = len(values)
+    gap = 24
+    total_gap = gap * (n - 1) if n > 1 else 0
+    bar_w = (560 - total_gap) / n
+    for i, v in enumerate(values):
+        pct = (v / max_value) * 100 if max_value else 0
+        bars.append(
+            f"<div class='bar' style='flex:0 0 auto;width:{bar_w}px;height:{pct}%;background:{bar_colors[i]};'></div>"
+            f"<div class='blabel' style='width:{bar_w}px;text-align:center;'>{bar_labels[i]}</div>"
+            f"<div class='bval' style='width:{bar_w}px;text-align:center;margin-top:4px;'>{value_labels[i]}</div>"
+        )
+    xax = "".join(f"<div class='xlcell' style='width:{bar_w}px;text-align:center;'>{xl}</div>" for xl in xlabels)
+    return "".join(bars), xax
+
+
 def render_fig3():
-    logical_w, logical_h = 1200, 680
+    logical_w, logical_h = 1200, 720
     css = f"""
     html,body{{margin:0;padding:0;width:{logical_w}px;height:{logical_h}px;
       background:{BG};color:{TEXT};font-family:'Inter',sans-serif;overflow:hidden;}}
     .wrap{{position:relative;width:100%;height:100%;padding:34px 52px;box-sizing:border-box;}}
     .kicker{{font-size:15px;font-weight:700;letter-spacing:0.12em;color:{ACCENT};text-transform:uppercase;margin:0 0 10px 0;}}
     h2{{font-size:25px;font-weight:800;margin:0 0 18px 0;line-height:1.2;}}
-    .grid{{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;height:420px;}}
-    .panel{{border:1px solid {LINE};border-radius:9px;background:{PANEL};padding:16px;box-sizing:border-box;overflow:hidden;position:relative;}}
+    .grid{{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;height:520px;}}
+    .panel{{border:1px solid {LINE};border-radius:9px;background:{PANEL};padding:16px;box-sizing:border-box;overflow:hidden;display:flex;flex-direction:column;}}
     .pt{{font-size:15px;font-weight:700;margin:0 0 12px 0;color:{TEXT};}}
     .pt.a{{color:{ACCENT};}}.pt.b{{color:{ACCENT2};}}.pt.c{{color:{OK};}}.pt.d{{color:{TEXT};}}
-    .canvas{{height:330px;position:relative;background:{BG};border:1px solid {LINE};border-radius:7px;overflow:hidden;}}
-    .bar{{position:absolute;bottom:10px;background:{ACCENT};width:56px;}}
-    .bar.b{{background:{ACCENT2};}}.bar.c{{background:{OK};}}.bar.d{{background:{TEXT};opacity:0.7;}}
-    .blabel{{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:{TEXTM};font-family:'JetBrains Mono',mono;white-space:nowrap;}}
-    .bval{{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:{TEXT};font-family:'JetBrains Mono',mono;white-space:nowrap;}}
-    .xax{{position:absolute;bottom:4px;left:0;right:0;display:flex;justify-content:space-between;font-size:11px;color:{TEXTM};font-family:'JetBrains Mono',mono;padding:0 10px;}}
+    .chart{{flex:1;min-height:0;display:flex;flex-direction:column;}}
+    .bars{{display:flex;align-items:flex-end;gap:24px;height:210px;padding-bottom:6px;}}
+    .bar{{flex:0 0 auto;width:78px;background:{ACCENT};border-radius:3px 3px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;}}
+    .bar.b{{background:{ACCENT2};}}.bar.c{{background:{OK};}}.bar.d{{background:{TEXT};opacity:0.8;}}
+    .blabel{{font-size:11px;color:{TEXTM};font-family:'JetBrains Mono',mono;margin-top:6px;white-space:nowrap;}}
+    .bval{{font-size:11px;font-weight:700;color:{TEXT};font-family:'JetBrains Mono',mono;margin-top:3px;white-space:nowrap;}}
+    .xax{{display:flex;justify-content:space-between;height:20px;font-size:11px;color:{TEXTM};font-family:'JetBrains Mono',mono;padding-top:4px;}}
     .note{{font-size:12px;color:{TEXTM};margin-top:10px;line-height:1.5;}}
-    .full{{grid-column:1 / -1;height:200px;}}
-    .full .canvas{{height:140px;}}
+    .full{{grid-column:1 / -1;height:150px;}}
     """
+    # Panel A — wipe latency bars
+    wa_bars, wa_xax = _bar_chart(
+        WIPE_MS, max(WIPE_MS), [ACCENT, ACCENT2, OK, TEXT],
+        ["1 MB", "4 MB", "16 MB", "64 MB"],
+        [f"{v:.1f} ms" for v in WIPE_MS],
+        ["1 MB", "4 MB", "16 MB", "64 MB"], 210)
+    # Panel B — token dispatch (single stat bar)
+    # Panel C — route latency (single stat bar)
+    bf16 = B["medgemma_4b_weight_specs"]["bf16_weight_footprint_gb"]
+    int4 = B["medgemma_4b_weight_specs"]["int4_weight_footprint_gb_raw"]
+    wd_bars, wd_xax = _bar_chart(
+        [bf16, int4], bf16, [WARN, ACCENT],
+        ["BF16", "INT4"],
+        [f"{bf16} GB", f"{int4} GB"],
+        ["16 bit/param", "0.5 bit/param"], 210)
     body = f"""
     <div class="wrap">
       <div class="kicker">Figure 3 · Empirical FFI Benchmarks</div>
@@ -271,44 +303,35 @@ def render_fig3():
       <div class="grid">
         <div class="panel">
           <p class="pt a">Panel A · 3-Pass Volatile Wipe Latency &amp; Throughput</p>
-          <div class="canvas" id="a">
-            {''.join(f"<div class='bar' style='left:{20+i*110}px;bottom:10px;height:{WIPE_MS[i]/50*120}px;'></div><div class='blabel' style='left:{20+i*110}px;'>{int([1,4,16,64][i])} MB</div><div class='bval' style='left:{20+i*110}px;'>{WIPE_MS[i]:.1f} ms</div>" for i in range(4))}
-            <div class="xax">1 MB &nbsp; 4 MB &nbsp; 16 MB &nbsp; 64 MB</div>
+          <div class="chart">
+            <div class="bars">{wa_bars}</div>
+            <div class="xax">{wa_xax}</div>
           </div>
           <div class="note">Throughput at 16 MB: <b>{PRIMARY_MBPS:.0f} MB/s</b> ({PRIMARY_MS:.1f} ms). 4 passes: zeros, 0xFF, xorshift64*, zeros. Compiler barrier prevents elision.</div>
         </div>
         <div class="panel">
-          <p class="pt b">Panel B · C-ABI Token Stream Callback Latency Distribution</p>
-          <div class="canvas" id="b">
-            <div class="bar" style='left:20px;bottom:10px;height:120px;'></div>
-            <div class='blabel' style='left:20px;'>tokens/sec</div>
-            <div class='bval' style='left:20px;'>{TOKENS_SEC/1e6:.1f} M</div>
-            <div class="xax">callback boundary &nbsp; 276k tokens &nbsp; measured</div>
+          <p class="pt b">Panel B · C-ABI Token Stream Callback Throughput</p>
+          <div class="chart">
+            <div class="bars"><div class="bar b" style="width:78px;height:100%;"><div class="bval">{TOKENS_SEC/1e6:.1f} M</div><div class="blabel">tok/sec</div></div></div></div>
+            <div class="xax"><div style="text-align:center;">callback boundary · 276k tokens · measured</div></div>
           </div>
           <div class="note">Streaming C-&gt;Dart token dispatch across the FFI ABI boundary.</div>
         </div>
         <div class="panel">
           <p class="pt c">Panel C · /proc/net/route Air-Gap Verification Latency</p>
-          <div class="canvas" id="c">
-            <div class="bar" style='left:20px;bottom:10px;height:100px;'></div>
-            <div class='blabel' style='left:20px;'>route inspect</div>
-            <div class='bval' style='left:20px;'>{ROUTE_US:.2f} us</div>
-            <div class="xax">default-gateway probe &nbsp; deterministic</div>
+          <div class="chart">
+            <div class="bars"><div class="bar c" style="width:78px;height:100%;"><div class="bval">{ROUTE_US:.2f} us</div><div class="blabel">route inspect</div></div></div></div>
+            <div class="xax"><div style="text-align:center;">default-gateway probe · deterministic</div></div>
           </div>
           <div class="note">Parses /proc/net/route for Destination == 0x00000000; getifaddrs() IFF_UP non-loopback guard.</div>
         </div>
         <div class="panel full">
           <p class="pt d">Panel D · Theoretical MedGemma-4B Precision Memory Scaling</p>
-          <div class="canvas" id="d">
-            <div class="bar" style='left:20px;bottom:10px;height:100px;background:{WARN};'></div>
-            <div class='blabel' style='left:20px;'>BF16</div>
-            <div class='bval' style='left:20px;'>{B["medgemma_4b_weight_specs"]["bf16_weight_footprint_gb"]} GB</div>
-            <div class="bar" style='left:200px;bottom:10px;height:42px;background:{ACCENT};'></div>
-            <div class='blabel' style='left:200px;'>INT4</div>
-            <div class='bval' style='left:200px;'>{B["medgemma_4b_weight_specs"]["int4_weight_footprint_gb_raw"]} GB</div>
-            <div class="xax">16-bit/param &nbsp; 0.5-bit/param &nbsp; published model-size math</div>
+          <div class="chart">
+            <div class="bars">{wd_bars}</div>
+            <div class="xax">{wd_xax}</div>
           </div>
-          <div class="note">4B params x 0.5 bytes ~ 2.0 GB raw INT4 (~2.3-2.6 GB with overhead) vs ~8.0 GB BF16. Distinct from measured FFI/wipe/route benchmarks above.</div>
+          <div class="note">4B params x 0.5 bytes ~ 2.0 GB raw INT4 (~2.3-2.6 GB with overhead) vs ~8.0 GB BF16. Published model-size math, distinct from measured FFI/wipe/route benchmarks above.</div>
         </div>
       </div>
     </div>
